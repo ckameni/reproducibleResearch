@@ -9,15 +9,14 @@ output: html_document
 
 ## synopsis
 
-This document provides a simple analysis of .
-Severe weather events has large impacts on both the health of the population, and the health of the economy in the United States. In this report I analysed the severe weather events for the period 1996-2011 as provided by the U.S. National Oceanic and Atmospheric Administration (NOAA).
+This document provides a simple analysis of weather events and their negative impacts on both the population and the economy in the United States. The analysed data are provided by the U.S. National Oceanic and Atmospheric Administration (NOAA). This analysis shows that: 1)tornados cause the highest number of injuries per year  and also causes the  most fatalities.2)Flood and drought have the most severe econmic damages on properties and crops,respectivly.
 
 
 
 #1  Data Loading and  Processing
 
 ```{r}
-
+library(ggplot2)
 library(R.utils)
 library(dplyr)
 Sys.setenv(LANG = "en_US.UTF-8")
