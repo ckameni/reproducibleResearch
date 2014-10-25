@@ -9,7 +9,7 @@ output: html_document
 
 ## synopsis
 
-This document reports on a peer assessment for the coursera Data Science Specialization track: Reproducible Research.
+This document provides a simple analysis of .
 Severe weather events has large impacts on both the health of the population, and the health of the economy in the United States. In this report I analysed the severe weather events for the period 1996-2011 as provided by the U.S. National Oceanic and Atmospheric Administration (NOAA).
 
 
@@ -51,7 +51,7 @@ As the data is very big, We will start by reducing the data set and keep only th
 
 ```{r}
 #look in the data
-head(stormData)
+names(StormData)
 # we reduce the dimensions of the data set
 reducedDf<-stormData[,c(2,8,23,24,25,26,27,28)] 
 
@@ -97,8 +97,6 @@ reducedDf$BGN_DATE <-NULL
 
 #view the data 
 dim(reducedDf)
-
-
 
 ```
 
@@ -174,83 +172,34 @@ MergedDf$EVTYPE<-gsub("^ ", "",MergedDf$EVTYPE)
 
 
 ```{r}
-MergedDf$EVTYPE<-gsub("flooding","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("floods","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flood/flash","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash flooding/flood","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash floodflood","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash flood/flood","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flood/flash/flood","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("erosion/cstl flood","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash flood","flood",MergedDf$EVTYPE)
-
-MergedDf$EVTYPE<-gsub("river flood","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flooding","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flooding/erosion","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flood/erosion" ,"flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal  flooding/erosion","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("ice jam flood \\(minor","ice jam flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^lake effect snow$" ,"lake-effect snow",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^heavy snow shower$","heavy snow",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^snow squalls$","snow squall" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^extreme cold$","extreme cold/wind chill" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^cold/wind chill$","extreme cold/wind chill" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^unseasonably cold$","unseasonable cold" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^gusty winds$","gusty wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^high winds$","high wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("tstm","thunderstorm",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind g58$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstrom wind","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind 45$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind  \\(g45\\)$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind \\(g45\\)$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind \\(g40\\)$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind \\(g35\\)$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^high wind \\(g40\\)$","high wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind g45$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind 40$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm winds 53$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm winds 13$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind 55$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorms wind$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm winds$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind/lightning$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm wind \\(41\\)$" ,"thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^non\\-thunderstorm wind$","non thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^strong wind$","strong winds" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^typhoon$","hurricane/typhoon" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^rip currents$","rip current" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^thunderstorm$","thunderstorm wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^winter weather mix$","winter weather/mix" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^frost$","frost/freeze" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^landslides$","landslide" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^mixed precip$","mixed precipitation" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^mudslide$","mud slide" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^river flooding$","river flood" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^high wind 48$","high wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^high winds/","high wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^high  winds","high wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^winds","wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail/winds","hail/wind" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail damage","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 075","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 75","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 100","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 150","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 150","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 125","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 275","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 175","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 200","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 450","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("^hail 0.75","hail" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("excessive heat","heat" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("drought/excessive heat","heat" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("heat wave","heat" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("extreme heat","heat" ,MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("heat wave drought","heat" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE[grep("fire",MergedDf$EVTYPE)]<-"wild fire"     
+MergedDf$EVTYPE[grep("forest" ,MergedDf$EVTYPE)]<-"forest fire"     
+MergedDf$EVTYPE[grep("erosion" ,MergedDf$EVTYPE)]<-"coastal erosion"     
+MergedDf$EVTYPE[grep("glaze" ,MergedDf$EVTYPE)]<-"glaze"     
+MergedDf$EVTYPE[grep("torn" ,MergedDf$EVTYPE)]<-"tornado"    
+MergedDf$EVTYPE[grep("swells" ,MergedDf$EVTYPE)]<-"high swells"     
+MergedDf$EVTYPE[grep("waterspout" ,MergedDf$EVTYPE)]<-"waterspout"     
+MergedDf$EVTYPE[grep("microburst" ,MergedDf$EVTYPE)]<-"microburst"     
+MergedDf$EVTYPE[grep("lighting" ,MergedDf$EVTYPE)]<-"lightning"     
+MergedDf$EVTYPE[grep("freez" ,MergedDf$EVTYPE)]<-"freeze"      
+MergedDf$EVTYPE[grep("landslide" ,MergedDf$EVTYPE)]<-"landslide"              
+MergedDf$EVTYPE[grep("mudsli",MergedDf$EVTYPE)]<-"mudslide"                 
+MergedDf$EVTYPE[grep("cold",MergedDf$EVTYPE)]<-"cold"
+MergedDf$EVTYPE[grep("[Ss]now" ,MergedDf$EVTYPE)]<-"snow"
+MergedDf$EVTYPE[grep("[Ww]ind" ,MergedDf$EVTYPE)]<-"wind"             
+MergedDf$EVTYPE[grep("[Ff]lood",MergedDf$EVTYPE)]<-"flood"
+MergedDf$EVTYPE[grep("tstm",MergedDf$EVTYPE)]<-"storm"               
+MergedDf$EVTYPE[grep("[Hh]ail" ,MergedDf$EVTYPE)]<-"hail"
+MergedDf$EVTYPE[grep("[Hh]eat" ,MergedDf$EVTYPE)]<-"heat"
+MergedDf$EVTYPE[grep("[Hh]urricane" ,MergedDf$EVTYPE)]<-"hurricane"
+MergedDf$EVTYPE[grep("[Ss]torm",MergedDf$EVTYPE)]<-"storm"
+MergedDf$EVTYPE[grep("[Ww]inter" ,MergedDf$EVTYPE)]<-"winter storm"
+MergedDf$EVTYPE[grep("[Pp]recip" ,MergedDf$EVTYPE)]<-"precipitation"
+MergedDf$EVTYPE[grep("[Cc]urrent" ,MergedDf$EVTYPE)]<-"rip current"
+MergedDf$EVTYPE[grep("[Rr]ain" ,MergedDf$EVTYPE)]<-"rain"
 
 dim(MergedDf)
+
 ```
 
 
@@ -350,10 +299,18 @@ multiplot <- function(..., plotlist=NULL, cols) {
 
 }
 
-multiplot(plot1, plot2, plot3, plot4, cols=2)
+multiplot(plot1, plot2, cols=1)
 ```
 
 
 
 This analysis shows that tornado have the highest number of injuries per year  and also causes the  most fatalities.
+
+
+```{r}
+multiplot(plot3, plot4, cols=1)
+
+```
+
+Those events which had great economic consequences are Flood and Drought.
 `
