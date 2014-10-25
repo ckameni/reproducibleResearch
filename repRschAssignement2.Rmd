@@ -56,8 +56,7 @@ head(stormData)
 reducedDf<-stormData[,c(2,8,23,24,25,26,27,28)] 
 
 #remove object "stormData"
-rm<-(stormData)
-
+rm(stormData)
 
 #view data
 head(reducedDf)
@@ -177,16 +176,19 @@ MergedDf$EVTYPE<-gsub("^ ", "",MergedDf$EVTYPE)
 ```{r}
 MergedDf$EVTYPE<-gsub("flooding","flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("floods","flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flood/flash","flash flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash flooding/flood","flash flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash floodflood","flash flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flash flood/flood","flash flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("flood/flash/flood","flash flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("erosion/cstl flood","coastal flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flooding","coastal flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flooding/erosion","coastal flood/erosion",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flood/erosion" ,"coastal flood/erosion",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal  flooding/erosion","coastal flood/erosion",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flood/flash","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flash flooding/flood","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flash floodflood","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flash flood/flood","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flood/flash/flood","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("erosion/cstl flood","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flash flood","flood",MergedDf$EVTYPE)
+
+MergedDf$EVTYPE<-gsub("river flood","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal flooding","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal flooding/erosion","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal flood/erosion" ,"flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal  flooding/erosion","flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("ice jam flood \\(minor","ice jam flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^lake effect snow$" ,"lake-effect snow",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^heavy snow shower$","heavy snow",MergedDf$EVTYPE)
@@ -242,8 +244,16 @@ MergedDf$EVTYPE<-gsub("^hail 175","hail" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^hail 200","hail" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^hail 450","hail" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^hail 0.75","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("excessive heat","heat" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("drought/excessive heat","heat" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("heat wave","heat" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("extreme heat","heat" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("heat wave drought","heat" ,MergedDf$EVTYPE)
 
-unique(MergedDf$EVTYPE)
+unique(MergedDf$EVTYPE[grep("heat" ,MergedDf$EVTYPE)])
+
+
+dim(MergedDf)
 ```
 
 
@@ -260,13 +270,14 @@ of the data
 ```{r}
 
 damageDf<- MergedDf %>% group_by(EVTYPE) %>%
-                summarize(SumFatalities = sum(FATALITIES), SumInjuries = sum(INJURIES),
-                          SumPopDamage = sum(propDamage),SumCropDamage = sum(cropDamage)
-                          )
+      summarize(SumFatalities = sum(FATALITIES), SumInjuries = sum(INJURIES), 
+      SumPopDamage = sum(propDamage),SumCropDamage = sum(cropDamage))
 
 dim(damageDf)
-# Sorted by Total Fatalities
-arrange(health_by_evtype,desc(TotalFatalities)) %>% head(10)
+
+````
+
+
 
 
 ```
@@ -274,21 +285,47 @@ arrange(health_by_evtype,desc(TotalFatalities)) %>% head(10)
 
 
 ### Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
-
-
-
-
-
-
-  view the 6 events that cause  most injuries  and fatalities
  
  
 ```{r}
-injurDf<-harmDamageDf[,c(1,5)]
- head(injurDf[order(-injurDf$INJURIES),]) 
+# Plotting the 6 events that cause the most injuries
+injDamage<-arrange(damageDf[,c(1,3)],desc(SumInjuries)) %>% head(); 
 
-  fatalDf<-harmDamageDf[,c(1,2)]
-head(fatalDf[order(-fatalDf$FATALITIES),]) 
+plot_injuries <- function(injuries){
+  p <- qplot(data=injDamage,
+             x=EVTYPE,
+             y=SumInjuries)
+  print(p)  
+}
+arrange(injDamage, SumInjuries) %>% 
+  do(plot = plot_injuries(.))
+
+
+# view list of the 6 events that cause the most injuries
+injDamage
+
+
+# plotting the 6 events  that cause the most fatalies
+ fatalDamage<-arrange(damageDf[,c(1,2)],desc(SumFatalities))%>% head()
+
+plot_fatalities <- function(fatalities){
+  p <- qplot(data=fatalDamage,
+             x=EVTYPE,
+             y=SumFatalities)
+  print(p)  
+}
+arrange(fatalDamage, SumFatalities) %>% 
+  do(plot = plot_fatalities(.))
+
+
+#view list of the 6 event that causes the most fatalies
+fatalDamage
+
+
+
+
+
+
 ```
 
 
@@ -297,13 +334,13 @@ Plotting the results
 
 
 
-```{r,injuries, fig.height=9,fig.width=10}
+```{r,injuries, fig.height=4,fig.width=6}
 
+class(injDamage)
 
-barplot(head(injurDf$INJURIES))
+hist(injDamage$EVTYPE)
 
 ```
-
 
 
 
@@ -311,39 +348,19 @@ barplot(head(injurDf$INJURIES))
 
 ### Across the United States, which types of events have the greatest economic consequences?
 
-view the 6 events that cause  most prop  and prop damages
 ```{r}
+ #view list of  the 6 events that cause the most prop domages
+ propDamage<-arrange(damageDf[,c(1,4)],desc(SumPopDamage ))%>% head();
+propDamage
 
-propDf<-harmDamageDf[,c(1,4)]
-head(propDf[order(-propDf$propDamage),])
+# list of the  6 events that cause the most crop damages
+ cropDamage<-arrange(damageDf[,c(1,5)],desc(SumCropDamage))%>% head();
+cropDamage
 
-cropDf<-harmDamageDf[,c(1,3)]
-head(cropDf[order(-cropDf$cropDamage),])
 
 ```
 
 
-
-
-
- 
- 
-```{r}
- 
-#the  event that causes the most injuries
-head(injurDf[order(-injurDf$INJURIES),])
-
-
-#the  event that causes the most fatalies
-head(fatalDf[order(-fatalDf$FATALITIES),]
-
- #the  event that causes the most prop domages
-head(propDf[order(-propDf$propDamage),])
-
-#the  event that causes the most crop damages
-head(cropDf[order(-cropDf$cropDamage),])
-
-```
 
 
 This analysis shows that tornado have the highest number of injuries per year  and that Heat causes the  most fatalities.
