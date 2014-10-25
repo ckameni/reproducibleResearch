@@ -17,8 +17,11 @@ Severe weather events has large impacts on both the health of the population, an
 #1  Data Loading and  Processing
 
 ```{r}
-Sys.setenv(LANG = "en_US.UTF-8")
+
 library(R.utils)
+library(dplyr)
+Sys.setenv(LANG = "en_US.UTF-8")
+sessionInfo()
 ```
 
 
@@ -168,18 +171,22 @@ MergedDf$EVTYPE<-gsub("^ ", "",MergedDf$EVTYPE)
 
 ```
 
- 
-clean up the names of event types
+ there is some duplication of event types under different names. clean up the names of event types:
+
 
 ```{r}
-
-MergedDf$EVTYPE<-gsub("tstm","thunderstorm",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flooding","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("floods","flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flood/flash","flash flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flash flooding/flood","flash flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("flash floodflood","flash flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("flash flood/flood","flash flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("flood/flash/flood","flash flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("erosion/cstl flood","coastal flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("coastal flooding","coastal flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal flooding/erosion","coastal flood",MergedDf$EVTYPE)
-MergedDf$EVTYPE<-gsub("coastal  flooding/erosion","coastal flood",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal flooding/erosion","coastal flood/erosion",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal flood/erosion" ,"coastal flood/erosion",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("coastal  flooding/erosion","coastal flood/erosion",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("ice jam flood \\(minor","ice jam flood",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^lake effect snow$" ,"lake-effect snow",MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^heavy snow shower$","heavy snow",MergedDf$EVTYPE)
@@ -189,6 +196,9 @@ MergedDf$EVTYPE<-gsub("^cold/wind chill$","extreme cold/wind chill" ,MergedDf$EV
 MergedDf$EVTYPE<-gsub("^unseasonably cold$","unseasonable cold" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^gusty winds$","gusty wind" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^high winds$","high wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("tstm","thunderstorm",MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^thunderstorm wind g58$","thunderstorm wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^thunderstrom wind","thunderstorm wind" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^thunderstorm wind 45$","thunderstorm wind" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^thunderstorm wind  \\(g45\\)$","thunderstorm wind" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^thunderstorm wind \\(g45\\)$","thunderstorm wind" ,MergedDf$EVTYPE)
@@ -215,8 +225,24 @@ MergedDf$EVTYPE<-gsub("^landslides$","landslide" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^mixed precip$","mixed precipitation" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^mudslide$","mud slide" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("^river flooding$","river flood" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^high wind 48$","high wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^high winds/","high wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^high  winds","high wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^winds","wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail/winds","hail/wind" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail damage","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 075","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 75","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 100","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 150","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 150","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 125","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 275","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 175","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 200","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 450","hail" ,MergedDf$EVTYPE)
+MergedDf$EVTYPE<-gsub("^hail 0.75","hail" ,MergedDf$EVTYPE)
 
-head(MergedDf)
 unique(MergedDf$EVTYPE)
 ```
 
@@ -229,14 +255,19 @@ of the data
 
 
 
- summarize the  injuries  ,fatalities, crop and property damages by event type 
+ summarize the  **injuries**, **fatalities**, **crop damages** and **property damages** by event type
  
 ```{r}
 
+damageDf<- MergedDf %>% group_by(EVTYPE) %>%
+                summarize(SumFatalities = sum(FATALITIES), SumInjuries = sum(INJURIES),
+                          SumPopDamage = sum(propDamage),SumCropDamage = sum(cropDamage)
+                          )
 
-harmDamageDf <- aggregate(INJURIES~EVTYPE + FATALITIES +  cropDamage + propDamage,MergedDf,sum)
+dim(damageDf)
+# Sorted by Total Fatalities
+arrange(health_by_evtype,desc(TotalFatalities)) %>% head(10)
 
-head(harmDamageDf)
 
 ```
 
@@ -256,7 +287,7 @@ head(harmDamageDf)
 injurDf<-harmDamageDf[,c(1,5)]
  head(injurDf[order(-injurDf$INJURIES),]) 
 
-fatalDf<-harmDamageDf[,c(1,2)]
+  fatalDf<-harmDamageDf[,c(1,2)]
 head(fatalDf[order(-fatalDf$FATALITIES),]) 
 ```
 
@@ -316,6 +347,4 @@ head(cropDf[order(-cropDf$cropDamage),])
 
 
 This analysis shows that tornado have the highest number of injuries per year  and that Heat causes the  most fatalities.
-```{r}
-sessionInfo()
-```
+`
