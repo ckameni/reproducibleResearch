@@ -250,15 +250,11 @@ MergedDf$EVTYPE<-gsub("heat wave","heat" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("extreme heat","heat" ,MergedDf$EVTYPE)
 MergedDf$EVTYPE<-gsub("heat wave drought","heat" ,MergedDf$EVTYPE)
 
-unique(MergedDf$EVTYPE[grep("heat" ,MergedDf$EVTYPE)])
-
-
 dim(MergedDf)
 ```
 
 
-the clean up process is over now. the data is tidy. We  can now start the Analysis
-of the data
+the clean up process is over now. the data is tidy. We  can now start the Analysis of the data
 
 
 # 2  Results
@@ -279,69 +275,20 @@ dim(damageDf)
 
 
 
-
-```
-
-
-
 ### Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
  
  
 ```{r}
-# Plotting the 6 events that cause the most injuries
-injDamage<-arrange(damageDf[,c(1,3)],desc(SumInjuries)) %>% head(); 
-
-plot_injuries <- function(injuries){
-  p <- qplot(data=injDamage,
-             x=EVTYPE,
-             y=SumInjuries)
-  print(p)  
-}
-arrange(injDamage, SumInjuries) %>% 
-  do(plot = plot_injuries(.))
-
-
 # view list of the 6 events that cause the most injuries
+injDamage<-arrange(damageDf[,c(1,3)],desc(SumInjuries)) %>% head(); 
 injDamage
 
-
-# plotting the 6 events  that cause the most fatalies
- fatalDamage<-arrange(damageDf[,c(1,2)],desc(SumFatalities))%>% head()
-
-plot_fatalities <- function(fatalities){
-  p <- qplot(data=fatalDamage,
-             x=EVTYPE,
-             y=SumFatalities)
-  print(p)  
-}
-arrange(fatalDamage, SumFatalities) %>% 
-  do(plot = plot_fatalities(.))
-
-
 #view list of the 6 event that causes the most fatalies
-fatalDamage
-
-
-
-
+ fatalDamage<-arrange(damageDf[,c(1,2)],desc(SumFatalities))%>% head()
+ fatalDamage
 
 
 ```
-
-
-
-Plotting the results
-
-
-
-```{r,injuries, fig.height=4,fig.width=6}
-
-class(injDamage)
-
-hist(injDamage$EVTYPE)
-
-```
-
 
 
 
@@ -361,7 +308,52 @@ cropDamage
 ```
 
 
+## Conclusion
+
+Plotting the results
+```{r}
+ plot1 <- qplot(data=injDamage, x=EVTYPE, y=SumInjuries)
+
+ plot2 <- qplot(data=fatalDamage,x=EVTYPE,y=SumFatalities)
+  
+ plot3 <- qplot(data=propDamage,x=EVTYPE,y=SumPopDamage)
+
+ plot4 <- qplot(data=cropDamage,x=EVTYPE,y=SumCropDamage)
 
 
-This analysis shows that tornado have the highest number of injuries per year  and that Heat causes the  most fatalities.
+
+multiplot <- function(..., plotlist=NULL, cols) {
+    require(grid)
+
+    # Make a list from the ... arguments and plotlist
+    plots <- c(list(...), plotlist)
+
+    numPlots = length(plots)
+
+    # Make the panel
+    plotCols = cols# Number of columns of plots
+    
+    plotRows = ceiling(numPlots/plotCols) # Number of rows needed, calculated from # of cols
+
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(plotRows, plotCols)))
+    vplayout <- function(x, y)
+        viewport(layout.pos.row = x, layout.pos.col = y)
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+        curRow = ceiling(i/plotCols)
+        curCol = (i-1) %% plotCols + 1
+        print(plots[[i]], vp = vplayout(curRow, curCol ))
+    }
+
+}
+
+multiplot(plot1, plot2, plot3, plot4, cols=2)
+```
+
+
+
+This analysis shows that tornado have the highest number of injuries per year  and also causes the  most fatalities.
 `
